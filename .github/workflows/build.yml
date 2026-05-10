@@ -14,14 +14,12 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup Android NDK
-        uses: android-actions/setup-android@v3
-        with:
-          ndk-version: '25.2.9519653' # Versión estándar para estos emuladores
+      - name: Install Build Tools
+        run: sudo apt-get install -y cmake ninja-build
 
       - name: Build with Gradle
         run: |
-          # Buscamos la carpeta exacta de Android y compilamos
+          # Busca la carpeta de Android y compila limitando la memoria
           cd $(find . -name "gradlew" -exec dirname {} \;)
           chmod +x gradlew
-          ./gradlew assembleRelease --stacktrace
+          ./gradlew assembleRelease -Pandroid.skipCc=true --no-daemon -Dorg.gradle.jvmargs="-Xmx4g"
