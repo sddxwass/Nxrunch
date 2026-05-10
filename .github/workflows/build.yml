@@ -14,12 +14,12 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Install Build Tools
-        run: sudo apt-get install -y cmake ninja-build
+      - name: Install Tools
+        run: sudo apt-get update && sudo apt-get install -y cmake ninja-build
 
-      - name: Build with Gradle
+      - name: Build Debug APK
         run: |
-          # Busca la carpeta de Android y compila limitando la memoria
           cd $(find . -name "gradlew" -exec dirname {} \;)
           chmod +x gradlew
-          ./gradlew assembleRelease -Pandroid.skipCc=true --no-daemon -Dorg.gradle.jvmargs="-Xmx4g"
+          # Compilamos la versión DEBUG para evitar errores de firma
+          ./gradlew assembleDebug --no-daemon -Dorg.gradle.jvmargs="-Xmx3g"
