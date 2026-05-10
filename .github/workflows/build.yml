@@ -12,13 +12,11 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-      - name: Build with Gradle
-        run: |
-          chmod +x src/android/gradlew
-          ./src/android/gradlew assembleRelease
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: nxrunch-APK
-          path: src/android/app/build/outputs/apk/release/*.apk
 
+      - name: Find and Build
+        run: |
+          # Este comando busca dónde está el archivo gradlew automáticamente
+          GRADLE_PATH=$(find . -name gradlew)
+          chmod +x $GRADLE_PATH
+          cd $(dirname $GRADLE_PATH)
+          ./gradlew assembleRelease --no-daemon
