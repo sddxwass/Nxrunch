@@ -7,16 +7,21 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+
       - name: set up JDK 17
         uses: actions/setup-java@v4
         with:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Find and Build
+      - name: Setup Android NDK
+        uses: android-actions/setup-android@v3
+        with:
+          ndk-version: '25.2.9519653' # Versión estándar para estos emuladores
+
+      - name: Build with Gradle
         run: |
-          # Este comando busca dónde está el archivo gradlew automáticamente
-          GRADLE_PATH=$(find . -name gradlew)
-          chmod +x $GRADLE_PATH
-          cd $(dirname $GRADLE_PATH)
-          ./gradlew assembleRelease --no-daemon
+          # Buscamos la carpeta exacta de Android y compilamos
+          cd $(find . -name "gradlew" -exec dirname {} \;)
+          chmod +x gradlew
+          ./gradlew assembleRelease --stacktrace
